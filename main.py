@@ -28,7 +28,7 @@ def arg_parse():
                         help='Maximum number of nodes (ignore graghs with nodes exceeding the number.')
     parser.add_argument('--clip', dest='clip', default=0.1, type=float, help='Gradient clipping.')
     parser.add_argument('--lr', dest='lr', default=0.001, type=float, help='Learning Rate.')
-    parser.add_argument('--num_epochs', dest='num_epochs', default=100, type=int, help='total epoch number')
+    parser.add_argument('--num-epochs', dest='num_epochs', default=100, type=int, help='total epoch number')
     parser.add_argument('--batch-size', dest='batch_size', default=800, type=int, help='Batch size.')
     parser.add_argument('--hidden-dim', dest='hidden_dim', default=512, type=int, help='Hidden dimension')
     parser.add_argument('--output-dim', dest='output_dim', default=256, type=int, help='Output dimension')
@@ -43,7 +43,7 @@ def arg_parse():
     parser.add_argument('--sign', dest='sign', type=int, default=1, help='sign of graph anomaly')
     parser.add_argument('--feature', dest='feature', default='default', help='use what node feature',
                         choices=['default', 'deg-num'])
-    parser.add_argument('--TrainTeacher', dest='tt', default=True, help='Whether trainning the teacher')
+    parser.add_argument('--train-teacher', dest='train_teacher', default=True, help='Whether trainning the teacher')
     return parser.parse_args()
 
 
@@ -133,8 +133,7 @@ def train(dataset_p, dataset_n, data_test_loader, model_teacher, model_student1,
                     y.append(0)
                 mr.append([data['label'].cpu().detach().numpy()[0], loss1.cpu().detach().numpy()[0],
                            loss2.cpu().detach().numpy()[0]])
-                print('label:{}, loss1:{}, loss2:{}'.format(data['label'].cpu().detach().numpy(),
-                                                            loss1.cpu().detach().numpy(), loss2.cpu().detach().numpy()))
+
 
             label_test = []
 
@@ -166,7 +165,6 @@ def train_teacher(dataset, model_teacher, args):
             loss = embed_teacher.std(dim=0).mean(dim=0)
             loss_node = embed_teacher_node.std(dim=1).mean(dim=1).mean(dim=0)
             loss = 1 / (loss + loss_node)
-            print('epoch:{}, loss:{}'.format(epoch, loss))
             loss.backward(loss.clone().detach())
             nn.utils.clip_grad_norm_(model_teacher.parameters(), args.clip)
             optimizer.step()
@@ -177,7 +175,7 @@ if __name__ == '__main__':
     args = arg_parse()
     setup_seed(args.seed)
     large = not args.DS.find("Tox21_") == -1
-    print(large)
+
     graphs = load_data.read_graphfile(args.datadir, args.DS, max_nodes=args.max_nodes)
     datanum = len(graphs)
     if args.max_nodes == 0:
@@ -258,7 +256,7 @@ if __name__ == '__main__':
         data_test_loader = torch.utils.data.DataLoader(dataset_sampler_test,
                                                        shuffle=False,
                                                        batch_size=1)
-        if args.tt:
+        if args.train_teacher:
             train_teacher(data_train_loader, model_teacher, args)
 
         result = train(data_train_loader_p, data_train_loader_n, data_test_loader, model_teacher, model_student1,
