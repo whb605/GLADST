@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-@author: LinFu
-"""
 import torch
 import torch.nn as nn
 from torch.nn import init
