@@ -14,11 +14,11 @@ Requirements are listed in the requirements.txt
 
 For datasets from Tox21, run the following code.
 
-	python main.py -DS Tox21_HSE_training -feature deg-num
+	python main.py --DS Tox21_HSE_training --feature deg-num
 	
 For the rest datasets, run the following code. For datasets with node attributes, feature chooses default, otherwise deg-num.
 
-	python main.py -DS DHFR -feature [default/deg-num]
+	python main.py --DS DHFR --feature default
 
 
 
