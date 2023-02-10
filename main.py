@@ -1,7 +1,3 @@
-"""
-@author: LinFu
-"""
-
 import numpy as np
 from sklearn.metrics import auc, roc_curve
 import argparse
